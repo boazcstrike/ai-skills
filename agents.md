@@ -2,6 +2,12 @@
 
 This project is the central source of truth for all AI agent skills.
 
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) — `npx skills` auto-installs on first use
+- [Git](https://git-scm.com/)
+- Windows: enable **Developer Mode** for symlink support, or use WSL2
+
 ## Repository structure
 
 ```
@@ -9,7 +15,8 @@ ai-skills/
 ├── claude/        → symlinked to ~/.claude/skills/
 ├── opencode/      → symlinked to ~/.config/opencode/skills/
 ├── agents/        → symlinked to ~/.agents/skills/
-├── bootstrap.sh   → sets up symlinks on a new machine
+├── bootstrap.sh   → Linux/macOS setup
+├── bootstrap.ps1  → Windows setup
 ├── README.md
 ├── agents.md
 ├── CLAUDE.md
@@ -28,7 +35,7 @@ Global install makes skills available across all projects.
 
 ## Where global skills live
 
-Each agent uses a different directory:
+### macOS / Linux
 
 ```bash
 ~/.claude/skills/          # Claude Code
@@ -36,7 +43,15 @@ Each agent uses a different directory:
 ~/.agents/skills/          # Codex
 ```
 
-OpenCode searches all three paths:
+### Windows
+
+```powershell
+%USERPROFILE%\.claude\skills\          # Claude Code
+%USERPROFILE%\.config\opencode\skills\ # OpenCode
+%USERPROFILE%\.agents\skills\          # Codex
+```
+
+OpenCode searches all three paths (whichever exist):
 
 ```bash
 ~/.config/opencode/skills/<name>/SKILL.md
@@ -46,15 +61,28 @@ OpenCode searches all three paths:
 
 ## Setup with symlinks
 
+### macOS / Linux
+
 ```bash
 mkdir -p ~/ai-skills
-git clone git@github.com:boazsze/ai-skills.git ~/ai-skills
+git clone git@github.com:boazcstrike/ai-skills.git ~/ai-skills
 ln -s ~/ai-skills/claude ~/.claude/skills
 ln -s ~/ai-skills/opencode ~/.config/opencode/skills
 ln -s ~/ai-skills/agents ~/.agents/skills
 ```
 
 Or just run `./bootstrap.sh` after cloning.
+
+### Windows (PowerShell as Administrator)
+
+```powershell
+git clone git@github.com:boazcstrike/ai-skills.git "$env:USERPROFILE\ai-skills"
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills" -Target "$env:USERPROFILE\ai-skills\claude" -Force
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.config\opencode\skills" -Target "$env:USERPROFILE\ai-skills\opencode" -Force
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.agents\skills" -Target "$env:USERPROFILE\ai-skills\agents" -Force
+```
+
+Or just run `.\bootstrap.ps1` after cloning.
 
 ## Adding a skill to the repo
 
